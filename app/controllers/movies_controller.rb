@@ -8,15 +8,25 @@ class MoviesController < ApplicationController
   
     def index
       # @movies = Movie.all
-      @movies = Movie.order(params[:sort])
+      @all_ratings = Movie.all_ratings
+      @selected_ratings = @all_ratings
       
+      # select ratings
+      
+      # if not (params[:ratings] == nil || params[:ratings].empty?)
+      if params[:ratings].kind_of?(Hash)
+        @selected_ratings = params[:ratings].keys
+        @movies = Movie.with_ratings(@selected_ratings).order(params[:sort])
+      else
+        @movies = Movie.order(params[:sort])
+      end
+      
+      # set sorting background
       if params[:sort] == 'title'
       # @title_header = 'p-3 mb-2 bg-warning text-dark'
       @title_header = "hilite"
-      
       elsif params[:sort] == 'release_date'
       @release_header = "hilite"
-      
       end
       
     end
